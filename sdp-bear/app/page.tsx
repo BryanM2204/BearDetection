@@ -1,8 +1,11 @@
+'use client';
 import "./main.css";
 import Bear from "./resources/beartest1.jpg";
 import Image, {StaticImageData} from "next/image";
 
+
 export default function Login() {
+
   return (
       <div className="main">
         <div className="title">
