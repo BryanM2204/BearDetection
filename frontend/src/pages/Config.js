@@ -1,12 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import useSound from "use-sound";
 import unchecked from "../resources/unchecked.svg";
 import checked from "../resources/checked.svg";
 import leftarrow from "../resources/leftarrow.svg";
 import rightarrow from "../resources/rightarrow.svg";
+import playbutton from "../resources/playbutton.svg";
+import airhornSound from "../resources/airhorn.mp3";
+import glassSound from "../resources/glass.wav";
+import whistleSound from "../resources/whistle.wav";
+import potsnpansSound from "../resources/potsnpans.mp3";
+import laserSound from "../resources/laser.mp3";
 import './Config.css';
 
 const Config = () => {
-  const [entities, setEntities] = useState({ bear: 0, cat: 0, dog: 0, person: 0 });
   const [sidebarState, setSidebarState] = useState("sidebar-open");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [genInterval, setGenInterval] = useState(20);
@@ -16,12 +22,47 @@ const Config = () => {
   const [triggerAlarm, setTriggerAlarm] = useState([]);
   const [detect, setDetect] = useState([]);
   const [currentTab, setCurrentTab] = useState("Detectable Entities");
+  const [alarmLen, setAlarmLen] = useState(10)
+  const [airhorn] = useSound(airhornSound);
+  const [glass] = useSound(glassSound);
+  const [whistle] = useSound(whistleSound);
+  const [potsnpans] = useSound(potsnpansSound);
+  const [laser] = useSound(laserSound);
+
+  const PlayButton = (props) => {
+
+    const PlaySound = (sound) => {
+      sound()
+    }
+
+    return (
+      <div className="checkbox" onContextMenu={(e)=> e.preventDefault()}>
+        <img src={playbutton} alt={props.value} onClick={() => PlaySound(props.sound)}></img>
+      </div>
+  );
+  }
 
   const Checkbox = (props) => {
-    //console.log(props.value)
-    const [isChecked, setIsChecked] = useState(false)
-    const [icon, setIcon] = useState(unchecked)
-    const [altText, setAltText] = useState("unchecked")
+
+    var defaultCheck = false;
+
+    switch(props.setting) {
+      case "sounds":
+        defaultCheck = sounds.includes(props.value) ? true : false;
+        break;
+      case "triggerAlarm":
+        defaultCheck = triggerAlarm.includes(props.value) ? true : false;
+        break;
+      case "detect":
+        defaultCheck = detect.includes(props.value) ? true : false;
+        break;
+      default:
+    }
+
+    const [isChecked, setIsChecked] = useState(defaultCheck)
+    const [icon, setIcon] = useState(defaultCheck ? checked : unchecked)
+    const [altText, setAltText] = useState(defaultCheck ? "checked" : "unchecked")
+  
 
     const SwitchCheck = (setting, value) => {
       
@@ -75,7 +116,6 @@ const Config = () => {
         }
       }
     }
-
 
     return (
         <div className="checkbox" onContextMenu={(e)=> e.preventDefault()}>
@@ -156,17 +196,28 @@ const Config = () => {
 
   const Submit = (props) => {
 
-    const SendConfig = () => {
+    const SendConfig = async () => {
       var config = {
         "sounds": sounds,
         "triggerAlarm": triggerAlarm,
         "detect": detect,
         "genInterval": Number(genInterval),
         "detInterval": Number(detInterval),
+        "alarmLen": Number(alarmLen),
         "imgLimit": Number(imgLimit),
       }
 
       console.log(JSON.stringify(config));
+
+      const response = await fetch('http://127.0.0.1:5000/setconfig', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(config)
+      });
+
+
     }
 
     return (
@@ -175,24 +226,6 @@ const Config = () => {
       </div>
     );
   }
-
-  useEffect(() => {
-    fetch("/api/pi/config")
-      .then((res) => res.json())
-      .then((data) => setEntities(data.entites));
-  }, []);
-
-  const handleChange = (key, value) => {
-    setEntities((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const handleSave = () => {
-    fetch("/api/pi/config", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(entities),
-    }).then(() => alert("Config sent to Pi!"));
-  };
 
   return (
     <div className="content">
@@ -243,27 +276,27 @@ const Config = () => {
           <tr>
             <td>Airhorn</td>
             <td><Checkbox setting="sounds" value={"airhorn"}></Checkbox></td>
-            <td><Checkbox></Checkbox></td>
+            <td><PlayButton value="airhorn" sound={airhorn}></PlayButton></td>
           </tr>
           <tr>
             <td>Glass</td>
             <td><Checkbox setting="sounds" value={"glass"}></Checkbox></td>
-            <td><Checkbox></Checkbox></td>
+            <td><PlayButton value="glass" sound={glass}></PlayButton></td>
           </tr>
           <tr>
             <td>Whistle</td>
             <td><Checkbox setting="sounds" value={"whistle"}></Checkbox></td>
-            <td><Checkbox></Checkbox></td>
+            <td><PlayButton value="whistle" sound={whistle}></PlayButton></td>
           </tr>
           <tr>
             <td>Laser</td>
             <td><Checkbox setting="sounds" value={"laser"}></Checkbox></td>
-            <td><Checkbox></Checkbox></td>
+            <td><PlayButton value="laser" sound={laser}></PlayButton></td>
           </tr>
           <tr>
             <td>Pots and Pans</td>
             <td><Checkbox setting="sounds" value={"potsnpans"}></Checkbox></td>
-            <td><Checkbox></Checkbox></td>
+            <td><PlayButton value="potsnpans" sound={potsnpans}></PlayButton></td>
           </tr>
         </table>
         <table style={{display: "none"}} id="misc" className="settings">
@@ -288,6 +321,16 @@ const Config = () => {
               id="detCap"
               value={detInterval}
               onChange={e => setDetInterval(e.target.value)}
+              onWheel={(e) => e.target.blur()}
+            /></td>
+          </tr>
+          <tr>
+            <td>Alarm Length</td>
+            <td className="select"><input
+              type="number"
+              id="alrmLen"
+              value={alarmLen}
+              onChange={e => setAlarmLen(e.target.value)}
               onWheel={(e) => e.target.blur()}
             /></td>
           </tr>
