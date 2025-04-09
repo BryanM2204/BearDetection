@@ -4,7 +4,7 @@ import placeholder from '../images/placeholder.jpg'
 const Dashboard = () => {
   const [message, setMessage] = useState("");
   const [detections, setDetections] = useState([]);
-
+  // comment
   // useEffect(() => {
   //   //fetch("/api/detections")
   //   fetch("/api/dashboard")
