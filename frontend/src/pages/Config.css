@@ -1,0 +1,143 @@
+.content {
+    display: flex;
+    background: #323232ff;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    overflow-y: auto;
+}
+
+.page {
+    display: flex;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    transition: margin-left .5s;
+    background: #323232ff;
+    justify-content: center;
+    padding: 20px;
+}
+
+.sidebar {
+    width: 33%;
+    height: 100%;
+    background-color: #191919ff;
+    overflow-y: auto;
+}
+
+.sidebar-tab {
+    width: 100%;
+    color: #cfcfcfff;
+    text-align: right;
+    padding: 10px;
+    font-size: 50px;
+    background-color: transparent;
+    border: none;
+}
+
+.selected-tab {
+    width: 100%;
+    color: #ffd400;
+    text-decoration: underline;
+    text-align: right;
+    padding: 10px;
+    font-size: 50px;
+    background-color: transparent;
+    border: none;
+}
+
+.sidebar-open {
+    width: 100px;
+    height: 100px;
+    margin-right: 0px;
+    margin-left: auto;
+}
+
+.sidebar-closed {
+    /*display: inline-block;*/
+    width: 100px;
+    height: 100px;
+    margin-right: auto;
+    margin-left: 0px;
+}
+
+.checkbox {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    vertical-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.submitBtn {
+    background: #ffeb89ff;
+    color: #191919ff;
+    justify-self: center;
+    justify-content: center;
+    margin-top: 50px;
+    text-align: center;
+    font-size: 50px;
+    border-radius: 50px;
+    height: 100px;
+    width: 300px;
+    line-height: 100px;
+    display: block;
+    border: none;
+}
+
+.submitBtn:hover {
+    background: #323232ff;
+    color: #cfcfcfff;
+}
+
+.settings {
+    color: rgb(245, 219, 219);
+    font-size: 24px;
+    height: auto;
+    width: 750px;
+    text-align: left;
+    align-self: center;
+    
+}
+
+.settings th {
+    border: 1px solid #ffeb89ff;
+    padding-left: 5px;
+}
+
+.settings td {
+    border-bottom: 1px solid #cfcfcfff;
+    border-left: 1px solid #cfcfcfff;
+    border-right: 1px solid #cfcfcfff;
+    color: #cfcfcfff;
+    
+}
+
+.column-names {
+    background-color: #ffeb89ff;
+    color: #323232ff;
+}
+
+.select {
+    text-align: center;
+}
+
+.table-text {
+    padding-left: 5px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+    text-align: center;
+    background-color: transparent;
+    color: #cfcfcfff;
+    width: 100%;
+    border: none;
+    
+}
