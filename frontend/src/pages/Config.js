@@ -247,22 +247,22 @@ const Config = () => {
             <th className="select">Trigger Alarm</th>
           </tr>
           <tr>
-            <td>Bear</td>
+            <td className="table-text">Bear</td>
             <td><Checkbox setting="detect" value={21}></Checkbox></td>
             <td><Checkbox setting="triggerAlarm" value={21}></Checkbox></td>
           </tr>
           <tr>
-            <td>Cat</td>
+            <td className="table-text">Cat</td>
             <td><Checkbox setting="detect" value={15}></Checkbox></td>
             <td><Checkbox setting="triggerAlarm" value={15}></Checkbox></td>
           </tr>
           <tr>
-            <td>Dog</td>
+            <td className="table-text">Dog</td>
             <td><Checkbox setting="detect" value={16}></Checkbox></td>
             <td><Checkbox setting="triggerAlarm" value={16}></Checkbox></td>
           </tr>
           <tr>
-            <td>Person</td>
+            <td className="table-text">Person</td>
             <td><Checkbox setting="detect" value={0}></Checkbox></td>
             <td><Checkbox setting="triggerAlarm" value={0}></Checkbox></td>
           </tr>
@@ -274,27 +274,27 @@ const Config = () => {
             <th className="select">Play</th>
           </tr>
           <tr>
-            <td>Airhorn</td>
+            <td className="table-text">Airhorn</td>
             <td><Checkbox setting="sounds" value={"airhorn"}></Checkbox></td>
             <td><PlayButton value="airhorn" sound={airhorn}></PlayButton></td>
           </tr>
           <tr>
-            <td>Glass</td>
+            <td className="table-text">Glass</td>
             <td><Checkbox setting="sounds" value={"glass"}></Checkbox></td>
             <td><PlayButton value="glass" sound={glass}></PlayButton></td>
           </tr>
           <tr>
-            <td>Whistle</td>
+            <td className="table-text">Whistle</td>
             <td><Checkbox setting="sounds" value={"whistle"}></Checkbox></td>
             <td><PlayButton value="whistle" sound={whistle}></PlayButton></td>
           </tr>
           <tr>
-            <td>Laser</td>
+            <td className="table-text">Laser</td>
             <td><Checkbox setting="sounds" value={"laser"}></Checkbox></td>
             <td><PlayButton value="laser" sound={laser}></PlayButton></td>
           </tr>
           <tr>
-            <td>Pots and Pans</td>
+            <td className="table-text">Pots and Pans</td>
             <td><Checkbox setting="sounds" value={"potsnpans"}></Checkbox></td>
             <td><PlayButton value="potsnpans" sound={potsnpans}></PlayButton></td>
           </tr>
@@ -305,7 +305,7 @@ const Config = () => {
             <th className="select">Value</th>
           </tr>
           <tr>
-            <td>General Capture Interval</td>
+            <td className="table-text">General Capture Interval</td>
             <td className="select"><input
               type="number"
               id="genCap"
@@ -315,7 +315,7 @@ const Config = () => {
             /></td>
           </tr>
           <tr>
-            <td>Detection Interval</td>
+            <td className="table-text">Detection Interval</td>
             <td className="select"><input
               type="number"
               id="detCap"
@@ -325,7 +325,7 @@ const Config = () => {
             /></td>
           </tr>
           <tr>
-            <td>Alarm Length</td>
+            <td className="table-text">Alarm Length</td>
             <td className="select"><input
               type="number"
               id="alrmLen"
@@ -335,7 +335,7 @@ const Config = () => {
             /></td>
           </tr>
           <tr>
-            <td>Image Limit</td>
+            <td className="table-text">Image Limit</td>
             <td className="select"><input
               type="number"
               id="imgLim"
