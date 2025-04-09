@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Config from "./pages/Config";
+import Account from "./pages/Account";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -39,6 +40,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+      <Route
+        path="/account"
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <Account />
+          </ProtectedRoute>
+        }
+      />
         <Route
           path="*"
           element={
