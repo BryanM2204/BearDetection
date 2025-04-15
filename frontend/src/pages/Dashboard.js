@@ -2,25 +2,51 @@ import React, { useEffect, useState } from "react";
 import placeholder from '../resources/placeholder.jpg';
 import './Dashboard.css';
 
-const Dashboard = () => {
-
-  const Card = (props) => {
-
-    return (
-      <div className={props.type === "bulk" ? "img-card" : "last-img"}>
-        <img
-          src={placeholder}
-          alt="placeholder"
-          style={{ cursor: 'pointer' }}
-          onClick={() => window.open(placeholder, '_blank')}
-        />
-        <div className="text">
-          <span>{props.animal}</span>
-          <span>{props.info}</span>
-        </div>
+const Card = (props) => {
+  return (
+    <div className={props.type === "bulk" ? "img-card" : "last-img"}>
+      <img
+        src={placeholder}
+        alt="placeholder"
+        style={{ cursor: 'pointer' }}
+        onClick={() => window.open(placeholder, '_blank')}
+      />
+      <div className="text">
+        <span>{props.animal}</span>
+        <span>{props.info}</span>
       </div>
-    )
-  }
+    </div>
+  )
+}
+
+const CardDisplay = ({ data }) => {
+  return (
+    <div className="cards">
+      {data.map((card, index) => (
+        <Card
+          key={index}
+          animal={card.animal}
+          info={card.info}
+          type={card.type}
+        />
+      ))}
+    </div>
+  );
+};
+
+const Dashboard = () => {
+  const cardData = [
+    { animal: "Bear", info: "April 15, 2025 - 1:45 AM", type: "bulk" },
+    { animal: "Bear", info: "April 15, 2025 - 1:45 AM", type: "bulk" },
+    { animal: "Cat", info: "April 11, 2025 - 6:49 PM", type: "bulk" },
+    { animal: "Bear", info: "April 15, 2025 - 1:45 AM", type: "bulk" },
+    { animal: "Bear", info: "April 15, 2025 - 1:45 AM", type: "bulk" },
+    { animal: "Bear", info: "April 15, 2025 - 1:45 AM", type: "bulk" },
+    { animal: "Cat", info: "April 11, 2025 - 6:49 PM", type: "bulk" },
+    { animal: "Bear", info: "April 15, 2025 - 1:45 AM", type: "bulk" },
+    { animal: "Cat", info: "April 11, 2025 - 6:49 PM", type: "bulk" },
+    { animal: "Bear", info: "April 15, 2025 - 1:45 AM", type: "bulk" },
+  ];
 
   return (
     <div className="dash-content">
@@ -38,18 +64,7 @@ const Dashboard = () => {
           <div className="update-entry">• Cat detected at 12:41 PM - March 29, 2025</div>
         </div>
       </div>
-      <div className="cards">
-        <Card animal="Bear" info="April 15, 2025 - 1:45 AM" type="bulk"></Card>
-        <Card animal="Bear" info="April 15, 2025 - 1:45 AM" type="bulk"></Card>
-        <Card animal="Cat" info="April 11, 2025 - 6:49 PM" type="bulk"></Card>
-        <Card animal="Bear" info="April 15, 2025 - 1:45 AM" type="bulk"></Card>
-        <Card animal="Bear" info="April 15, 2025 - 1:45 AM" type="bulk"></Card>
-        <Card animal="Bear" info="April 15, 2025 - 1:45 AM" type="bulk"></Card>
-        <Card animal="Cat" info="April 11, 2025 - 6:49 PM" type="bulk"></Card>
-        <Card animal="Bear" info="April 15, 2025 - 1:45 AM" type="bulk"></Card>
-        <Card animal="Cat" info="April 11, 2025 - 6:49 PM" type="bulk"></Card>
-        <Card animal="Bear" info="April 15, 2025 - 1:45 AM" type="bulk"></Card>
-      </div>
+      <CardDisplay data={cardData} />
     </div>
   );
 };
