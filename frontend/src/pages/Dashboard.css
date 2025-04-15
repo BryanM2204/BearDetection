@@ -1,14 +1,18 @@
 .content {
-    background-color: "#191919";
-    height: 100%;
-    justify-content: center;
-    overflow: auto;
+    background-color: #191919; 
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    padding-bottom: 50px; 
 }
 
 .card {
     margin: 10px;
     background-color: transparent;
     border: none;
+    border-radius: 10px;
 }
 
 .card img {
@@ -24,9 +28,11 @@
 }
 
 .cards {
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    background-color: transparent;
-    justify-content: center;
+    gap: 5px;
+    
 }
 
 .text span {
@@ -36,4 +42,39 @@
     margin-left: 10px;
     font-size: 20px;
     background-color: transparent;
+}
+
+.notifications {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    padding: 20px;
+    border-radius: 20px;
+    margin: 30px;
+    gap: 20px;
+    max-width: 800px;
+    width: 90%;
+}
+
+.latest-card img {
+    width: 470px;
+    height: 300px;
+    border-radius: 20px;
+    object-fit: cover;
+    background-color: #ccc;
+}
+
+.update-text {
+    display: flex;
+    flex-direction: column;
+    font-size: 20px;
+    color: #cfcfcf
+}
+
+.update-title {
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 24px;
+    margin-bottom: 10px;
 }
