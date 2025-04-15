@@ -1,0 +1,39 @@
+.content {
+    background-color: "#191919";
+    height: 100%;
+    justify-content: center;
+    overflow: auto;
+}
+
+.card {
+    margin: 10px;
+    background-color: transparent;
+    border: none;
+}
+
+.card img {
+    height: 200px;
+    width: auto;
+    border-radius: 10px;
+}
+
+.title {
+    color: #ffd400ff;
+    font-size: 30px;
+    text-align: center;
+}
+
+.cards {
+    align-items: center;
+    background-color: transparent;
+    justify-content: center;
+}
+
+.text span {
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    margin-left: 10px;
+    font-size: 20px;
+    background-color: transparent;
+}
