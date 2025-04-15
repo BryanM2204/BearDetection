@@ -7,7 +7,7 @@ const Dashboard = () => {
   const Card = (props) => {
 
     return (
-      <div className="card">
+      <div className={props.type === "bulk" ? "img-card" : "last-img"}>
         <img src={placeholder} alt="placeholder"></img>
         <div className="text">
           <span>{props.animal}</span>
@@ -18,15 +18,22 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="content">
-      <div className="title">
+    <div className="dash-content">
+      <div className="page-name">
         <span>Dashboard</span>
       </div>
+      <div>
+        <Card animal="Last Image" info="April 15, 2025 4:56 PM" type="primary"></Card>
+      </div>
       <div className="cards">
-        <Card animal="Bear" info="April 15, 2025 - 1:45 AM"></Card>
-        <Card animal="Bear" info="April 15, 2025 - 1:45 AM"></Card>
-        <Card animal="Cat" info="April 11, 2025 - 6:49 PM"></Card>
-        <Card animal="Bear" info="April 15, 2025 - 1:45 AM"></Card>
+        <Card animal="Bear" info="April 15, 2025 - 1:45 AM" type="bulk"></Card>
+        <Card animal="Bear" info="April 15, 2025 - 1:45 AM" type="bulk"></Card>
+        <Card animal="Cat" info="April 11, 2025 - 6:49 PM" type="bulk"></Card>
+        <Card animal="Bear" info="April 15, 2025 - 1:45 AM" type="bulk"></Card>
+        <Card animal="Bear" info="April 15, 2025 - 1:45 AM" type="bulk"></Card>
+        <Card animal="Bear" info="April 15, 2025 - 1:45 AM" type="bulk"></Card>
+        <Card animal="Cat" info="April 11, 2025 - 6:49 PM" type="bulk"></Card>
+        <Card animal="Bear" info="April 15, 2025 - 1:45 AM" type="bulk"></Card>
       </div>
     </div>
   );
