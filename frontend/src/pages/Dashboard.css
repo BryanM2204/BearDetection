@@ -1,47 +1,72 @@
-.content {
-    background-color: #191919; 
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+.dash-content {
+    background-color: #191919;
+    height: 100%;
+    justify-content: center;
+    overflow: auto;
+    display: block;
     align-items: center;
-    overflow-y: auto;
-    padding-bottom: 50px; 
 }
 
-.card {
+.img-card {
     margin: 10px;
-    background-color: transparent;
     border: none;
+    color: #cfcfcf;
+    position: relative;
+    display: inline-block;
+}
+
+.last-img {
+    margin: 25px;
+    border: none;
+    color: #cfcfcf;
+    position: relative;
+    display: inline-block;
+}
+
+.last-img img {
+    height: 400px;
+    width: auto;
     border-radius: 10px;
 }
 
-.card img {
+.img-card img {
     height: 200px;
     width: auto;
     border-radius: 10px;
 }
 
-.title {
+.page-name {
     color: #ffd400ff;
     font-size: 30px;
     text-align: center;
+    display: block;
+}
+
+.page-name span {
+    position: relative;
+    display: block;
 }
 
 .cards {
+    background-color: transparent;
+    flex-wrap: wrap;
     display: flex;
-    flex-direction: column;
+    margin-bottom: 50px;
+    justify-content: center;
     align-items: center;
-    gap: 5px;
-    
 }
 
-.text span {
+.text {
     align-items: center;
     justify-content: center;
     align-content: center;
     margin-left: 10px;
     font-size: 20px;
-    background-color: transparent;
+}
+
+.text span {
+    position: relative;
+    display: block;
 }
 
 .notifications {
@@ -51,7 +76,7 @@
     background-color: transparent;
     padding: 20px;
     border-radius: 20px;
-    margin: 30px;
+    margin: 30px auto;
     gap: 20px;
     max-width: 800px;
     width: 90%;
