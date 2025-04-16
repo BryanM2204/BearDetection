@@ -8,7 +8,7 @@ const Dashboard = () => {
 
     return (
       <div className={props.type === "bulk" ? "img-card" : "last-img"}>
-        <img src={placeholder} alt="placeholder"></img>
+        <img src="static/Cat-detection2025-04-09_10-28-49.756937.png" alt="placeholder"></img>
         <div className="text">
           <span>{props.animal}</span>
           <span>{props.info}</span>
