@@ -3,18 +3,14 @@ import placeholder from '../resources/placeholder.jpg';
 import './Dashboard.css';
 import { BiRefresh } from "react-icons/bi";
 
-const refreshApp = async () => {
-  const response = fetch('https://10.194.219.157:5000/geturls')
-}
-
 const Card = (props) => {
   return (
     <div className={props.type === "bulk" ? "img-card" : "last-img"}>
       <img
-        src={placeholder}
-        alt="placeholder"
+        src={props.imgURL || placeholder}
+        alt="detection"
         style={{ cursor: 'pointer' }}
-        onClick={() => window.open(placeholder, '_blank')}
+        onClick={() => window.open(props.imgURL || placeholder, '_blank')}
       />
       <div className="text">
         <span>{props.animal}</span>
@@ -33,6 +29,7 @@ const CardDisplay = ({ data }) => {
           animal={card.animal}
           info={card.info}
           type={card.type}
+          imgURL = {card.imgURL}
         />
       ))}
     </div>
@@ -40,19 +37,40 @@ const CardDisplay = ({ data }) => {
 };
 
 const Dashboard = () => {
+  const [cardData, setCardData] = useState([]);
+  // const cardData = [
+  //   { animal: "Bear", info: "April 15, 2025 - 1:45 AM", type: "bulk" },
+  //   { animal: "Bear", info: "April 15, 2025 - 1:45 AM", type: "bulk" },
+  //   { animal: "Cat", info: "April 11, 2025 - 6:49 PM", type: "bulk" },
+  //   { animal: "Bear", info: "April 15, 2025 - 1:45 AM", type: "bulk" },
+  //   { animal: "Bear", info: "April 15, 2025 - 1:45 AM", type: "bulk" },
+  //   { animal: "Bear", info: "April 15, 2025 - 1:45 AM", type: "bulk" },
+  //   { animal: "Cat", info: "April 11, 2025 - 6:49 PM", type: "bulk" },
+  //   { animal: "Bear", info: "April 15, 2025 - 1:45 AM", type: "bulk" },
+  //   { animal: "Cat", info: "April 11, 2025 - 6:49 PM", type: "bulk" },
+  //   { animal: "Bear", info: "April 15, 2025 - 1:45 AM", type: "bulk" },
+  // ];
 
-  const cardData = [
-    { animal: "Bear", info: "April 15, 2025 - 1:45 AM", type: "bulk" },
-    { animal: "Bear", info: "April 15, 2025 - 1:45 AM", type: "bulk" },
-    { animal: "Cat", info: "April 11, 2025 - 6:49 PM", type: "bulk" },
-    { animal: "Bear", info: "April 15, 2025 - 1:45 AM", type: "bulk" },
-    { animal: "Bear", info: "April 15, 2025 - 1:45 AM", type: "bulk" },
-    { animal: "Bear", info: "April 15, 2025 - 1:45 AM", type: "bulk" },
-    { animal: "Cat", info: "April 11, 2025 - 6:49 PM", type: "bulk" },
-    { animal: "Bear", info: "April 15, 2025 - 1:45 AM", type: "bulk" },
-    { animal: "Cat", info: "April 11, 2025 - 6:49 PM", type: "bulk" },
-    { animal: "Bear", info: "April 15, 2025 - 1:45 AM", type: "bulk" },
-  ];
+  const refreshApp = async () => 
+  {
+    const response = await fetch("IP/geturls"); 
+    const imagePaths = await response.json(); 
+
+    const updatedData = imagePaths.map(path => {
+        const fullUrl = `IP/geturls${path}`;
+        const animal = "bear"
+        const dateStr = "April 13, 2025 - 2:13 AM"
+
+        return {
+          animal: animal,
+          info: dateStr,
+          type: "bulk",
+          imgUrl: fullUrl
+        };
+      });
+
+    setCardData(updatedData);
+  };
 
   return (
     <div className="dash-content">
