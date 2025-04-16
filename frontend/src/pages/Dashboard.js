@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import placeholder from '../resources/placeholder.jpg';
 import './Dashboard.css';
+import { BiRefresh } from "react-icons/bi";
+
+const refreshApp = async () => {
+  const response = fetch('https://10.194.219.157:5000/geturls')
+}
 
 const Card = (props) => {
   return (
@@ -35,6 +40,7 @@ const CardDisplay = ({ data }) => {
 };
 
 const Dashboard = () => {
+
   const cardData = [
     { animal: "Bear", info: "April 15, 2025 - 1:45 AM", type: "bulk" },
     { animal: "Bear", info: "April 15, 2025 - 1:45 AM", type: "bulk" },
@@ -52,6 +58,11 @@ const Dashboard = () => {
     <div className="dash-content">
       <div className="page-name">
         <span>Dashboard</span>
+      </div>
+      <div className='refresh-button'>
+        <button onClick = {refreshApp}>
+          <BiRefresh />
+        </button>
       </div>
       <div className="notifications">
         <div className="latest-card">

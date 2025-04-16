@@ -37,7 +37,8 @@
 
 .page-name {
     color: #ffd400ff;
-    font-size: 30px;
+    font-size: 36px;
+    font-weight: bold;
     text-align: center;
     display: block;
 }
@@ -106,4 +107,8 @@
 
 .update-entry {
     margin-bottom: 8px;
+}
+
+.refresh-button {
+    margin-right: 0
 }
