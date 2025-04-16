@@ -49,12 +49,12 @@
 }
 
 .cards {
-    background-color: transparent;
-    flex-wrap: wrap;
-    display: flex;
+    display: grid;
     margin-bottom: 50px;
-    justify-content: center;
+    grid-template-columns: repeat(4, auto);
+    justify-self: center;
     align-items: center;
+    align-self: center;
 }
 
 .text {
