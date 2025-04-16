@@ -2,11 +2,11 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { Navigate } from "react-router-dom"; 
 import Home from "./pages/Home";
+import About from "./pages/About"
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Config from "./pages/Config";
-import Account from "./pages/Account";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -22,6 +22,7 @@ function App() {
       <Navbar isAuthenticated={isAuthenticated} />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route
@@ -40,14 +41,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-      <Route
-        path="/account"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-          <Account />
-          </ProtectedRoute>
-        }
-      />
         <Route
           path="*"
           element={
