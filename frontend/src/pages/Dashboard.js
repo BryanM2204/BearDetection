@@ -49,9 +49,9 @@ const Dashboard = () => {
     const imagePaths = (await response.json())["urls"]; 
 
     const updatedData = imagePaths.map(path => {
-        const fullUrl = `http://localhost:5000/${path}`;
-        const animal = "bear"
-        const dateStr = "April 13, 2025 - 2:13 AM"
+        const fullUrl = `http://localhost:5000/${path.url}`;
+        const animal = path.animal
+        const dateStr = path.date
 
         console.log(fullUrl)
 
