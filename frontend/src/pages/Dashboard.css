@@ -1,10 +1,9 @@
 .dash-content {
-    background-color: "#191919";
+    background-color: #191919;
     height: 100%;
     justify-content: center;
     overflow: auto;
     display: block;
-    position: relative;
     align-items: center;
 }
 
@@ -38,7 +37,8 @@
 
 .page-name {
     color: #ffd400ff;
-    font-size: 30px;
+    font-size: 36px;
+    font-weight: bold;
     text-align: center;
     display: block;
 }
@@ -50,8 +50,8 @@
 
 .cards {
     background-color: transparent;
-    position: relative;
-    display: block;
+    flex-wrap: wrap;
+    display: flex;
     margin-bottom: 50px;
     justify-content: center;
     align-items: center;
@@ -68,4 +68,47 @@
 .text span {
     position: relative;
     display: block;
+}
+
+.notifications {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    padding: 20px;
+    border-radius: 20px;
+    margin: 30px auto;
+    gap: 20px;
+    max-width: 800px;
+    width: 90%;
+}
+
+.latest-card img {
+    width: 470px;
+    height: 300px;
+    border-radius: 20px;
+    object-fit: cover;
+    background-color: #ccc;
+}
+
+.update-text {
+    display: flex;
+    flex-direction: column;
+    font-size: 20px;
+    color: #cfcfcf
+}
+
+.update-title {
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.update-entry {
+    margin-bottom: 8px;
+}
+
+.refresh-button {
+    margin-right: 0
 }
