@@ -25,9 +25,15 @@ const Card = (props) => {
 
 const Dashboard = () => {
   const [cardData, setCardData] = useState([]);
+  const [startUp, setStartUp] = useState(true)
 
   const CardDisplay = (props) => {
-  
+
+    if (startUp) {
+      refreshApp()
+      setStartUp(false)
+    }
+
     return (
       <div className="cards">
         {cardData.reverse().map((card, index) => (

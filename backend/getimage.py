@@ -64,8 +64,10 @@ def getimgurls():
         #urls.append(img[0])
         data = img[0].split("-")
         obj["animal"] = data[0][7:]
-        date = months[data[2]] + " " + data[3][:2] + ", " + data[1][-4:]
+        timeInfo = data[4] + ":" + data[5]
+        date = months[data[2]] + " " + data[3] + ", " + data[1]
         obj["date"] = date
+        obj["timeInfo"] = timeInfo
 
         obj["url"] = img[0]
 
