@@ -14,6 +14,7 @@ const Card = (props) => {
       />
       <div className="text">
         <span>{props.animal}</span>
+        <span>{props.timeInfo}</span>
         <span>{props.info}</span>
       </div>
     </div>
@@ -29,13 +30,14 @@ const Dashboard = () => {
   
     return (
       <div className="cards">
-        {cardData.map((card, index) => (
+        {cardData.reverse().map((card, index) => (
           <Card
             key={index}
             animal={card.animal}
             info={card.info}
             type={card.type}
             imgURL = {card.imgUrl}
+            timeInfo={card.timeInfo}
           />
           
         ))}
@@ -52,6 +54,7 @@ const Dashboard = () => {
         const fullUrl = `http://localhost:5000/${path.url}`;
         const animal = path.animal
         const dateStr = path.date
+        const timeInfo = path.timeInfo
 
         console.log(fullUrl)
 
@@ -59,11 +62,12 @@ const Dashboard = () => {
           animal: animal,
           info: dateStr,
           type: "bulk",
-          imgUrl: fullUrl
+          imgUrl: fullUrl,
+          timeInfo: timeInfo
         };
       });
 
-    setCardData(updatedData);
+    setCardData(updatedData.reverse());
   };
 
   return (
