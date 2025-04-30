@@ -58,7 +58,7 @@ temp_db = {'Test':'Password'}
 stop_event = threading.Event()  # stop event to signal threads to exit (fix Keyboard Interrupt issue)
 arr = None
 
-def send_to_pi(payload):
+def send_to_pi(payload): #dont need
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.settimeout(3)  # optional: avoid hang
         s.connect((piserver, PI_PORT))
@@ -191,45 +191,45 @@ def execute_query(connection, query): # executes a SQL query in the database
         cursor.close()
         connection.close
 
-@inst.before_request # IP filter (makeshift firewall)
-def limit_remote_addr():
-    if request.remote_addr not in whitelist:
-        abort(403) # "Forbidden" HTTP status code
+#@inst.before_request # IP filter (makeshift firewall)
+#def limit_remote_addr():
+    #if request.remote_addr not in whitelist:
+        #abort(403) # "Forbidden" HTTP status code
 
 #@inst.route('/') # route decorator --> defines a URL path
 #def index():
     #return render_template('Home.html')
 #TODO
-@inst.route('/', methods=['GET']) #still want?
-@cross_origin()
-def index():
-    images = pd.read_csv("images.csv")
-    print(images)
-    camera = 'camera.png'
-    detections = ['detection.png']
-    return render_template('index.html', cam = camera, detections = detections)
+# @inst.route('/', methods=['GET']) #still want?
+# @cross_origin()
+# def index():
+#     images = pd.read_csv("images.csv")
+#     print(images)
+#     camera = 'camera.png'
+#     detections = ['detection.png']
+#     return render_template('index.html', cam = camera, detections = detections)
 
-@inst.route('/upload', methods=['POST']) # only allow POST method (for uploading)
-def upload():
-    #print('got to /upload', flush=True)
-    #inst.logger.debug("Debug message")
-    if request.method == 'POST':
-        if 'arr' not in request.json:
-            return 'No file in the request', 400 # "Bad request" HTTP status code
-        global arr 
-        arr = np.array(request.json['arr'])
-        print(arr.shape)
-        print(arr)
-        plt.imshow(arr)
-        plt.show()
-        #cv2.imshow('yolo', arr)
-        # exit when q is pressed
-        #cv2.waitKey(1) == ord('q')
-        print(type(arr))
-        #yolo(arr)
-        #print(f'Saving file to: {os.path.abspath(inst.config['UPLOAD_FOLDER'] + file.filename)}', flush=True)
-        #file.save(fr'C:\Users\dalyt\Documents\SDP\uploads\{file.filename}') # save the file
-    return 'File uploaded', 200 # "OK" HTTP status code
+# @inst.route('/upload', methods=['POST']) # only allow POST method (for uploading)
+# def upload():
+#     #print('got to /upload', flush=True)
+#     #inst.logger.debug("Debug message")
+#     if request.method == 'POST':
+#         if 'arr' not in request.json:
+#             return 'No file in the request', 400 # "Bad request" HTTP status code
+#         global arr 
+#         arr = np.array(request.json['arr'])
+#         print(arr.shape)
+#         print(arr)
+#         plt.imshow(arr)
+#         plt.show()
+#         #cv2.imshow('yolo', arr)
+#         # exit when q is pressed
+#         #cv2.waitKey(1) == ord('q')
+#         print(type(arr))
+#         #yolo(arr)
+#         #print(f'Saving file to: {os.path.abspath(inst.config['UPLOAD_FOLDER'] + file.filename)}', flush=True)
+#         #file.save(fr'C:\Users\dalyt\Documents\SDP\uploads\{file.filename}') # save the file
+#     return 'File uploaded', 200 # "OK" HTTP status code
 
 @inst.route('/api/signup', methods=['GET', 'POST'])
 def signup():
@@ -393,19 +393,13 @@ def login():
             connection.close()'''
     #return render_template('Login.html')
 
-@inst.route('/dashboard', methods=['GET', 'POST'])
-def old_dashboard():
-    if 'username' not in session:
-        return redirect('/login')
-    return render_template('Dashboard.html', username=session['username'])
-
 @inst.route('/api/logout')
 def logout():
     session.pop('username', None)
     return jsonify({"message": "Logged out"}), 200
     #return redirect('/')
 
-@inst.route("/api/detections")
+'''@inst.route("/api/detections")
 def get_detections():
     """Fetch test detected images"""
     detections_folder = os.path.join("frontend", "public", "detections")
@@ -415,16 +409,7 @@ def get_detections():
         os.makedirs(detections_folder)
 
     images = [img for img in os.listdir(detections_folder) if img.endswith(".jpg") or img.endswith(".png")]
-    return jsonify({"message": "Welcome to the dashboard!", "detections": images})
-
-# Serve detection images
-@inst.route("/detections/<path:filename>")
-def serve_detection_image(filename):
-    return send_from_directory("frontend/public/detections", filename)
-
-@inst.route("/static/<path:filename>")
-def serve_static(filename):
-        return send_from_directory(os.path.join(inst.static_folder, "static"), filename)
+    return jsonify({"message": "Welcome to the dashboard!", "detections": images})'''
 
 @inst.route('/setconfig', methods=['POST'])
 @cross_origin()
@@ -439,11 +424,11 @@ def setconfig():
         response = {"message": "Received"}
         return jsonify(response), 201
 
-@inst.route('/getimages', methods=['GET'])
+'''@inst.route('/getimages', methods=['GET'])
 @cross_origin()
 def getimages():
     path = 'C:/Users/rubas/OneDrive/Documents/Random/beartest1.jpg'
-    return send_file(path)
+    return send_file(path)'''
 
 @inst.route('/geturls', methods=['GET'])
 @cross_origin()
@@ -456,15 +441,6 @@ def getimgurls():
 
     response = {"urls": urls}
     return jsonify(response), 201
-
-@inst.route("/api/pi/config", methods=["GET"]) # ???
-def get_pi_config():
-    return send_to_pi({"type": "get_config"})
-
-@inst.route("/api/pi/config", methods=["POST"])# ???
-def set_pi_config():
-    data = request.get_json()
-    return send_to_pi({"type": "set_config", "payload": data})
 
 # Serve React frontend
 @inst.route("/", defaults={"path": ""})
