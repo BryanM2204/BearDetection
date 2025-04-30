@@ -5,6 +5,7 @@ import requests
 import os
 import sys
 import mysql.connector
+import pymysql
 from mysql.connector import Error
 import time
 import subprocess
@@ -57,14 +58,6 @@ whitelist = {ip, piserver,'0.0.0.0'} # allowed IP addresses
 temp_db = {'Test':'Password'}
 stop_event = threading.Event()  # stop event to signal threads to exit (fix Keyboard Interrupt issue)
 arr = None
-
-def send_to_pi(payload): #dont need
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.settimeout(3)  # optional: avoid hang
-        s.connect((piserver, PI_PORT))
-        s.sendall(json.dumps(payload).encode())
-        response = s.recv(4096)
-        return json.loads(response)
 
 def send_file_to_server(file_path):
     with open(file_path, 'rb') as f:
@@ -163,9 +156,25 @@ def background():
 #background_thread = threading.Thread(target=background, daemon=True)
 #background_thread.start()
 
+# def create_connection():
+#     try:
+#         connection = mysql.connector.connect( # connect to the SQL server and use the SDPlogin database
+#             host='localhost',
+#             user='Team43',
+#             password='bearsRcool',
+#             database='SDPlogin',
+#             port='3307' # default is 3306, I'm using 3307 for this MySQL server because of conflicts
+#         )
+#         if connection.is_connected():
+#             print('Connection Successful')
+#             return connection
+#     except Error as e:
+#         print(f'Error: {e}')
+#         return None
+    
 def create_connection():
     try:
-        connection = mysql.connector.connect( # connect to the SQL server and use the SDPlogin database
+        connection = pymysql.connect( # connect to the SQL server and use the SDPlogin database
             host='localhost',
             user='Team43',
             password='bearsRcool',
