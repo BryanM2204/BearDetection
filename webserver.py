@@ -1,4 +1,5 @@
-from flask import Flask, request, abort, render_template, redirect, session, url_for, request
+from flask import Flask, request, abort, render_template, redirect, session, url_for, request, jsonify, send_from_directory, send_file, g, current_app
+from flask_cors import CORS, cross_origin
 from flask_login import LoginManager, UserMixin
 import requests
 import os
@@ -19,8 +20,12 @@ import cv2
 import matplotlib.pyplot as plt
 import json
 import socket
+import numpy as np 
+import pandas as pd
+from filelock import FileLock, Timeout
 
-inst = Flask(__name__) # create flask instance
+inst = Flask(__name__, static_folder=r"") # create flask instance
+CORS(inst) # enable CORS for all routes
 #login_manager = LoginManager()
 #login_manager.init_app(inst)
 
@@ -47,10 +52,19 @@ if not os.path.exists(r'C:\Users\dalyt\Documents\SDP\signal.txt'):
 #logging.basicConfig(level=logging.DEBUG)
 ip = socket.gethostbyname(socket.gethostname()) #host ip
 piserver = '10.66.97.109' # ip address of Raspberry Pi
-whitelist = {ip, piserver} # allowed IP addresses
+PI_PORT = 9000 # port number of the Raspberry Pi server
+whitelist = {ip, piserver,'0.0.0.0'} # allowed IP addresses
 temp_db = {'Test':'Password'}
 stop_event = threading.Event()  # stop event to signal threads to exit (fix Keyboard Interrupt issue)
 arr = None
+
+def send_to_pi(payload):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.settimeout(3)  # optional: avoid hang
+        s.connect((piserver, PI_PORT))
+        s.sendall(json.dumps(payload).encode())
+        response = s.recv(4096)
+        return json.loads(response)
 
 def send_file_to_server(file_path):
     with open(file_path, 'rb') as f:
@@ -73,9 +87,9 @@ def send_signal_to_server(signal):
 
 def run():
     ssl_context = (r'C:\Users\dalyt\Documents\SDP\server.crt', r'C:\Users\dalyt\Documents\SDP\private.key')
-    inst.run(host=ip, port=5000, use_reloader=False, ssl_context=ssl_context, debug=True) # port 5000 used for development
+    inst.run(host='0.0.0.0', port=5000, use_reloader=False, ssl_context=ssl_context, debug=True) # port 5000 used for development
 
-def start_yolo():
+def start_yolo(): # for running yolo file - not using anymore (yolo() instead)
     #yolo = subprocess.run(["python", "yolo_for_server.py"], capture_output=True)
     #yolo = subprocess.Popen(["python", "yolo_for_server.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     yolo = subprocess.Popen(['python', 'yolo_for_server.py'], stdout=sys.stdout, stderr=sys.stderr, text=True)
@@ -182,9 +196,18 @@ def limit_remote_addr():
     if request.remote_addr not in whitelist:
         abort(403) # "Forbidden" HTTP status code
 
-@inst.route('/') # route decorator --> defines a URL path
+#@inst.route('/') # route decorator --> defines a URL path
+#def index():
+    #return render_template('Home.html')
+#TODO
+@inst.route('/', methods=['GET']) #still want?
+@cross_origin()
 def index():
-    return render_template('Home.html')
+    images = pd.read_csv("images.csv")
+    print(images)
+    camera = 'camera.png'
+    detections = ['detection.png']
+    return render_template('index.html', cam = camera, detections = detections)
 
 @inst.route('/upload', methods=['POST']) # only allow POST method (for uploading)
 def upload():
@@ -208,71 +231,254 @@ def upload():
         #file.save(fr'C:\Users\dalyt\Documents\SDP\uploads\{file.filename}') # save the file
     return 'File uploaded', 200 # "OK" HTTP status code
 
-@inst.route('/signup', methods=['GET', 'POST'])
+@inst.route('/api/signup', methods=['GET', 'POST'])
 def signup():
-    if request.method == 'POST': # retrieve the username and password entered by the user
-        username = request.form['username']
-        password = request.form['password']
-        connection = create_connection()
-        cursor = connection.cursor()
-        try:
-            query = "INSERT into userpass (Username, Password) VALUES (%s, %s);"
-            cursor.execute(query, (username, password))
-            connection.commit()
-            success = True
-            print(f'User "{username}" added successfully')
+    #if request.method == 'POST': # retrieve the username and password entered by the user
+        #username = request.form['username']
+        #password = request.form['password']
+    data = request.get_json()
+    if not data or "username" not in data or "password" not in data:
+        return jsonify({"error": "Invalid data"}), 400 # "Bad request" HTTP status code
+    username = data["username"].strip()
+    password = data["password"].strip()
+    if not username or not password:
+        return jsonify({"error": "Username and password cannot be empty"}), 400
+    success = False
+    connection = create_connection()
+    cursor = connection.cursor()
+    try:
+        query = "INSERT into userpass (Username, Password) VALUES (%s, %s);"
+        cursor.execute(query, (username, password))
+        connection.commit()
+        success = True
+        print(f'User "{username}" added successfully')
             #temp_db[username] = password
             #print(temp_db)
-        except Error as e:
+    except Error as e:
+        if e.errno == 1062: # duplicate entry error code
             print(f"Error: '{e}'")
-        finally:
-            cursor.close()
-            connection.close()
-            if success:
-                return redirect('/login')
-    return render_template('SignUp.html')
+            return jsonify({"error": "User already exists"}), 400
+        print(f"Error: '{e}'")
+    finally:
+        cursor.close()
+        connection.close()
+        if success:
+            #return redirect('/login')
+            return jsonify({"message": "Signup successful"}), 200
+        else:
+            return jsonify({"error": "Error"}), 400
+    #return render_template('SignUp.html')
 
-@inst.route('/login', methods=['GET', 'POST'])
+@inst.route('/api/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST': # retrieve the username and password entered by the user
-        username = request.form['username']
-        password = request.form['password']
-        connection = create_connection()
-        cursor = connection.cursor()
-        try:
-            query = "SELECT Password FROM userpass WHERE Username = %s;"
-            cursor.execute(query, (username,)) # parameterized query to prevent SQL injection
-            queried_password = cursor.fetchone() # retrieves the next row of a query result set
+    # for testing with html template - has change username and password functionality
+    '''if request.method == 'POST': # retrieve the username and password entered by the user
+        username = None
+        password = None
+        old_username = None
+        new_username = None
+        cu_password = None
+        cp_username = None
+        old_password = None 
+        new_password = None
+        print(request.form)
+        if request.form['username'] != '':
+            username = request.form['username']
+            password = request.form['password']
+        elif request.form['old_username'] != '':
+            old_username = request.form['old_username']
+            new_username = request.form['new_username']
+            cu_password = request.form['cu_password']
+        elif request.form['old_password'] != '':
+            old_password = request.form['old_password']
+            new_password = request.form['new_password']
+            cp_username = request.form['cp_username']'''
+
+    '''try:
+            username = request.form['username']
+            password = request.form['password']
+        except KeyError as e:
+            print(e)
+            try:
+                old_username = request.form['old_username']
+                new_username = request.form['new_username']
+                cu_password = request.form['cu_password']
+            except KeyError as e:
+                print(e)
+                try:
+                    old_password = request.form['old_password']
+                    new_password = request.form['new_password']
+                    cp_username = request.form['cp_username']
+                except Exception as e:
+                    print(f'Error: {e}')
+                    return redirect('/login')'''
+    '''print(f'Username: {username}')
+        print(f'Password: {password}')
+        print(f'Old Username: {old_username}')
+        print(f'New Username: {new_username}')
+        print(f'CU Password: {cu_password}')
+        print(f'Old Password: {old_password}')
+        print(f'New Password: {new_password}')
+        print(f'CP Username: {cp_username}')
+        print(request.form['old_username'])
+        print(request.form['new_username'])'''
+    data = request.get_json()
+    username = data.get("username", "").strip()
+    password = data.get("password", "").strip()
+    connection = create_connection()
+    cursor = connection.cursor()
+    try:
+        query = "SELECT Password FROM userpass WHERE Username = %s;"
+        cursor.execute(query, (username,)) # parameterized query to prevent SQL injection
+        queried_password = cursor.fetchone() # retrieves the next row of a query result set
+        cursor.fetchall() # make sure there's no leftover rows in the query result set (prevent errors)
+        if queried_password[0] == password:
+            session['username'] = username
+            print(f'User "{username}" logged in successfully')
+            return jsonify({"message": "Login successful"}), 200 # "OK" HTTP status code
+        else:
+            print(f'User "{username}" failed to log in')
+            return jsonify({"error": "Invalid username or password"}), 401 # "Unauthorized" HTTP status code
+    except Error as e:
+        print(f"Error: '{e}'")
+    finally:
+        cursor.close()
+        connection.close()
+
+        '''try:
+            if username != None and password != None:
+                query = "SELECT Password FROM userpass WHERE Username = %s;"
+                cursor.execute(query, (username,)) # parameterized query to prevent SQL injection
+            elif old_username != None and new_username != None and cu_password != None:
+                password = cu_password
+                query = "SELECT Password FROM userpass WHERE Username = %s;"
+                cursor.execute(query, (old_username,))
+            elif old_password != None and new_password != None and cp_username != None:
+                password = old_password
+                query = "SELECT Password FROM userpass WHERE Username = %s;"
+                cursor.execute(query, (cp_username,))'''
+            #queried_password = cursor.fetchone() # retrieves the next row of a query result set
+            #print(queried_password)
             #print(username)
             #print(type(username))
             #print(queried_password)
-            cursor.fetchall() # make sure there's no leftover rows in the query result set (prevent errors)
+            #cursor.fetchall() # make sure there's no leftover rows in the query result set (prevent errors)
             #if temp_db[username]:
                 #if temp_db[username] == password:
                     #session['username'] = username
                     #return redirect(url_for('dashboard', username=username))
 
-            if queried_password[0] == password:
-                session['username'] = username
-                return redirect(url_for('dashboard'))
+        '''if queried_password[0] == password:
+                if old_username != None and new_username != None:
+                    query = "UPDATE userpass SET Username = %s WHERE Username = %s;"
+                    cursor.execute(query, (new_username, old_username))
+                    connection.commit()
+                    print(f'User "{old_username}" changed their username to "{new_username}"')
+                    return redirect('/login')
+                elif old_password != None and new_password != None:
+                    query = "UPDATE userpass SET Password = %s WHERE Username = %s;"
+                    cursor.execute(query, (new_password, username))
+                    connection.commit()
+                    print(f'User "{cp_username}" changed their password to "{new_password}"')
+                    return redirect('/login')
+                else:
+                    session['username'] = username
+                    print(f'User "{username}" logged in successfully')
+                    return redirect(url_for('dashboard'))
             else: return redirect('/login')
         except Error as e:
             print(f"Error: '{e}'")
         #finally:
             cursor.close()
-            connection.close()
-    return render_template('Login.html')
+            connection.close()'''
+    #return render_template('Login.html')
 
 @inst.route('/dashboard', methods=['GET', 'POST'])
-def dashboard():
+def old_dashboard():
     if 'username' not in session:
         return redirect('/login')
     return render_template('Dashboard.html', username=session['username'])
 
-@inst.route('/logout')
+@inst.route('/api/logout')
 def logout():
     session.pop('username', None)
-    return redirect('/')
+    return jsonify({"message": "Logged out"}), 200
+    #return redirect('/')
+
+@inst.route("/api/detections")
+def get_detections():
+    """Fetch test detected images"""
+    detections_folder = os.path.join("frontend", "public", "detections")
+
+    # Ensure detections folder exists
+    if not os.path.exists(detections_folder):
+        os.makedirs(detections_folder)
+
+    images = [img for img in os.listdir(detections_folder) if img.endswith(".jpg") or img.endswith(".png")]
+    return jsonify({"message": "Welcome to the dashboard!", "detections": images})
+
+# Serve detection images
+@inst.route("/detections/<path:filename>")
+def serve_detection_image(filename):
+    return send_from_directory("frontend/public/detections", filename)
+
+@inst.route("/static/<path:filename>")
+def serve_static(filename):
+        return send_from_directory(os.path.join(inst.static_folder, "static"), filename)
+
+@inst.route('/setconfig', methods=['POST'])
+@cross_origin()
+def setconfig():
+    if request.method == "POST":
+        data = request.get_json()
+        print(data)
+        lock = FileLock("config.json.lock", thread_local=False)
+        with lock:
+            with open("config.json", "w") as config:
+                json.dump(data, config, indent=2)
+        response = {"message": "Received"}
+        return jsonify(response), 201
+
+@inst.route('/getimages', methods=['GET'])
+@cross_origin()
+def getimages():
+    path = 'C:/Users/rubas/OneDrive/Documents/Random/beartest1.jpg'
+    return send_file(path)
+
+@inst.route('/geturls', methods=['GET'])
+@cross_origin()
+def getimgurls():
+    images = pd.read_csv("images.csv")
+    imgs = images.values.tolist()
+    urls = []
+    for img in imgs:
+        urls.append(img[0])
+
+    response = {"urls": urls}
+    return jsonify(response), 201
+
+@inst.route("/api/pi/config", methods=["GET"]) # ???
+def get_pi_config():
+    return send_to_pi({"type": "get_config"})
+
+@inst.route("/api/pi/config", methods=["POST"])# ???
+def set_pi_config():
+    data = request.get_json()
+    return send_to_pi({"type": "set_config", "payload": data})
+
+# Serve React frontend
+@inst.route("/", defaults={"path": ""})
+@inst.route("/<path:path>")
+def serve_react_app(path):
+    """
+    Serve React frontend for all routes except API endpoints.
+    """
+    # If the request is for an API endpoint, return a 404
+    if path.startswith("api/"):
+        return jsonify({"error": "API endpoint not found"}), 404
+
+    # Serve the frontend React app
+    return send_from_directory(inst.static_folder, "index.html")
 
 if __name__ == '__main__':
     #ssl_context = (r'C:\Users\dalyt\Documents\SDP\server.crt', r'C:\Users\dalyt\Documents\SDP\private.key')
