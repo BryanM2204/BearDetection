@@ -86,8 +86,8 @@ def send_signal_to_server(signal):
         print(e)
 
 def run():
-    ssl_context = (r'C:\Users\dalyt\Documents\SDP\server.crt', r'C:\Users\dalyt\Documents\SDP\private.key')
-    inst.run(host='0.0.0.0', port=5000, use_reloader=False, ssl_context=ssl_context, debug=True) # port 5000 used for development
+    #ssl_context = (r'C:\Users\dalyt\Documents\SDP\server.crt', r'C:\Users\dalyt\Documents\SDP\private.key')
+    inst.run(host='0.0.0.0', port=5000, use_reloader=False)#, ssl_context=ssl_context, debug=True) # port 5000 used for development
 
 def start_yolo(): # for running yolo file - not using anymore (yolo() instead)
     #yolo = subprocess.run(["python", "yolo_for_server.py"], capture_output=True)
