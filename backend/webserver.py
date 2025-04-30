@@ -181,9 +181,7 @@ def create_connection():
             database='SDPlogin',
             port=3307 # default is 3306, I'm using 3307 for this MySQL server because of conflicts
         )
-        if connection.is_connected():
-            print('Connection Successful')
-            return connection
+        return connection
     except Error as e:
         print(f'Error: {e}')
         return None
