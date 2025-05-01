@@ -432,7 +432,7 @@ def get_detections():
     return jsonify({"message": "Welcome to the dashboard!", "detections": images})'''
 
 @inst.route('/setconfig', methods=['POST'])
-@cross_origin(supports_credentials=True, origins=["http://localhost:3000"])
+@cross_origin()
 def setconfig():
     if request.method == "POST":
         data = request.get_json()
@@ -451,7 +451,7 @@ def getimages():
     return send_file(path)'''
 
 @inst.route('/geturls', methods=['GET'])
-@cross_origin(supports_credentials=True, origins=["http://localhost:3000"])
+@cross_origin()
 def getimgurls():
 
     months = {
