@@ -239,6 +239,7 @@ def execute_query(connection, query): # executes a SQL query in the database
 #     return 'File uploaded', 200 # "OK" HTTP status code
 
 @inst.route('/api/signup', methods=['GET', 'POST'])
+@cross_origin()
 def signup():
     #if request.method == 'POST': # retrieve the username and password entered by the user
         #username = request.form['username']
@@ -277,6 +278,7 @@ def signup():
     #return render_template('SignUp.html')
 
 @inst.route('/api/login', methods=['GET', 'POST'])
+@cross_origin()
 def login():
     # for testing with html template - has change username and password functionality
     '''if request.method == 'POST': # retrieve the username and password entered by the user
@@ -402,15 +404,16 @@ def login():
 
 # Authentication Check API
 @inst.route("/api/check-auth")
+@cross_origin()
 def check_auth():
     """Check if user is authenticated"""
     print("Current session contents:", dict(session)) # Dbugging output
     is_authenticated = "username" in session
-    print(is_authenticated)
     return jsonify({"authenticated": is_authenticated})
 
 
 @inst.route('/api/logout')
+@cross_origin()
 def logout():
     session.pop('username', None)
     return jsonify({"message": "Logged out"}), 200
