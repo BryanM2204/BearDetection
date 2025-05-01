@@ -393,6 +393,14 @@ def login():
             connection.close()'''
     #return render_template('Login.html')
 
+# Authentication Check API
+@inst.route("/api/check-auth")
+def check_auth():
+    """Check if user is authenticated"""
+    print("Current session contents:", dict(session)) # Dbugging output
+    is_authenticated = "username" in session
+    return jsonify({"authenticated": is_authenticated})
+
 @inst.route('/api/logout')
 def logout():
     session.pop('username', None)
