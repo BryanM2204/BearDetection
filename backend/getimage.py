@@ -9,6 +9,9 @@ from filelock import FileLock, Timeout
 app = Flask(__name__)
 CORS(app)
 
+users_db = {}
+app.secret_key = "supersecretkey"  # Required for session management
+
 @app.route('/getimages', methods=['GET'])
 @cross_origin()
 def getimages():
@@ -64,7 +67,19 @@ def getimgurls():
         #urls.append(img[0])
         data = img[0].split("-")
         obj["animal"] = data[0][7:]
-        timeInfo = data[4] + ":" + data[5]
+
+        hour = int(data[4])
+        half = "AM"
+
+        if hour >= 12 and hour <= 23:
+            half = "PM"
+
+        hour = hour % 12
+
+        if hour == 0:
+            hour = 12
+
+        timeInfo = str(hour) + ":" + data[5] + " " + half
         date = months[data[2]] + " " + data[3] + ", " + data[1]
         obj["date"] = date
         obj["timeInfo"] = timeInfo
@@ -75,6 +90,48 @@ def getimgurls():
 
     response = {"urls": urls}
     return jsonify(response), 201
+
+# Signup API (NO Password Hashing)
+@app.route("/api/signup", methods=["POST"])
+def signup():
+    """Handles user signup (PLAIN TEXT passwords, for testing only)"""
+    data = request.get_json()
+
+    if not data or "username" not in data or "password" not in data:
+        return jsonify({"error": "Invalid data"}), 400
+
+    username = data["username"].strip()
+    password = data["password"].strip()
+
+    if not username or not password:
+        return jsonify({"error": "Username and password cannot be empty"}), 400
+
+    if username in users_db:
+        return jsonify({"error": "User already exists"}), 400
+
+    # Store password as plain text (for testing only)
+    users_db[username] = password
+
+    print(f"User '{username}' registered successfully.")  # Debugging output
+    return jsonify({"message": "Signup successful"}), 200
+
+# Login API (PLAIN TEXT Passwords)
+@app.route("/api/login", methods=["POST"])
+def login():
+    """Handles user login (NO password hashing)"""
+    data = request.get_json()
+    username = data.get("username", "").strip()
+    password = data.get("password", "").strip()
+
+    if username not in users_db or users_db[username] != password:
+        print(f"Login failed for '{username}'. Incorrect username or password.")  # Debugging output
+        return jsonify({"error": "Invalid username or password"}), 401
+
+    # Login successful Set session
+    session["username"] = username
+    print(f"Login successful for '{username}'.")  # Debugging output
+    print("Login successful, session =", dict(session)) # Debugging output
+    return jsonify({"message": "Login successful"}), 200
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
