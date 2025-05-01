@@ -25,7 +25,7 @@ import numpy as np
 import pandas as pd
 from filelock import FileLock, Timeout
 
-inst = Flask(__name__, static_folder=r"/static") # create flask instance
+inst = Flask(__name__, static_folder=r"static") # create flask instance
 CORS(inst, supports_credentials=True, origins=["http://localhost:3000"]) # enable CORS for all routes
 #login_manager = LoginManager()
 #login_manager.init_app(inst)
