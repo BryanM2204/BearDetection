@@ -26,7 +26,7 @@ import pandas as pd
 from filelock import FileLock, Timeout
 
 inst = Flask(__name__, static_folder=r"/static") # create flask instance
-CORS(inst) # enable CORS for all routes
+CORS(inst, supports_credentials=True, origins=["http://localhost:3000"]) # enable CORS for all routes
 #login_manager = LoginManager()
 #login_manager.init_app(inst)
 
@@ -239,7 +239,7 @@ def execute_query(connection, query): # executes a SQL query in the database
 #     return 'File uploaded', 200 # "OK" HTTP status code
 
 @inst.route('/api/signup', methods=['GET', 'POST'])
-@cross_origin()
+@cross_origin(supports_credentials=True, origins=["http://localhost:3000"])
 def signup():
     #if request.method == 'POST': # retrieve the username and password entered by the user
         #username = request.form['username']
@@ -278,7 +278,7 @@ def signup():
     #return render_template('SignUp.html')
 
 @inst.route('/api/login', methods=['GET', 'POST'])
-@cross_origin()
+@cross_origin(supports_credentials=True, origins=["http://localhost:3000"])
 def login():
     # for testing with html template - has change username and password functionality
     '''if request.method == 'POST': # retrieve the username and password entered by the user
@@ -404,7 +404,7 @@ def login():
 
 # Authentication Check API
 @inst.route("/api/check-auth")
-@cross_origin()
+@cross_origin(supports_credentials=True, origins=["http://localhost:3000"])
 def check_auth():
     """Check if user is authenticated"""
     print("Current session contents:", dict(session)) # Dbugging output
@@ -413,7 +413,7 @@ def check_auth():
 
 
 @inst.route('/api/logout')
-@cross_origin()
+@cross_origin(supports_credentials=True, origins=["http://localhost:3000"])
 def logout():
     session.pop('username', None)
     return jsonify({"message": "Logged out"}), 200
@@ -432,7 +432,7 @@ def get_detections():
     return jsonify({"message": "Welcome to the dashboard!", "detections": images})'''
 
 @inst.route('/setconfig', methods=['POST'])
-@cross_origin()
+@cross_origin(supports_credentials=True, origins=["http://localhost:3000"])
 def setconfig():
     if request.method == "POST":
         data = request.get_json()
@@ -451,7 +451,7 @@ def getimages():
     return send_file(path)'''
 
 @inst.route('/geturls', methods=['GET'])
-@cross_origin()
+@cross_origin(supports_credentials=True, origins=["http://localhost:3000"])
 def getimgurls():
     images = pd.read_csv("images.csv")
     imgs = images.values.tolist()

@@ -10,9 +10,9 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await fetch("/api/check-auth", { credentials: "include" });
       const data = await res.json();
-      return setIsAuthenticated(data.authenticated);
+      setIsAuthenticated(data.authenticated);
     } finally {
-      return setAuthChecked(true);
+      setAuthChecked(true);
     }
   };
 
