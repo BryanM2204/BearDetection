@@ -12,11 +12,6 @@ CORS(app)
 users_db = {}
 app.secret_key = "supersecretkey"  # Required for session management
 
-@app.route('/getimages', methods=['GET'])
-@cross_origin()
-def getimages():
-    path = 'C:/Users/rubas/OneDrive/Documents/Random/beartest1.jpg'
-    return send_file(path)
 
 @app.route('/setconfig', methods=['POST'])
 @cross_origin()
@@ -30,7 +25,7 @@ def setconfig():
                 json.dump(data, config, indent=2)
         response = {"message": "Received"}
         return jsonify(response), 201
-
+'''
 @app.route('/', methods=['GET'])
 @cross_origin()
 def index():
@@ -39,7 +34,7 @@ def index():
     camera = 'camera.png'
     detections = ['detection.png']
     return render_template('index.html', cam = camera, detections = detections)
-
+'''
 @app.route('/geturls', methods=['GET'])
 @cross_origin()
 def getimgurls():
