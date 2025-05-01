@@ -1,6 +1,8 @@
 {
   "sounds": [],
-  "triggerAlarm": [],
+  "triggerAlarm": [
+    21
+  ],
   "detect": [
     21
   ],
