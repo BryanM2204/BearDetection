@@ -406,6 +406,7 @@ def check_auth():
     """Check if user is authenticated"""
     print("Current session contents:", dict(session)) # Dbugging output
     is_authenticated = "username" in session
+    print(is_authenticated)
     return jsonify({"authenticated": is_authenticated})
 
 
