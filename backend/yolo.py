@@ -72,16 +72,17 @@ def sound(detector):
                     data = json.load(config)
             sounds = []
             for sound in data["sounds"]:
-                sounds.append(sound_options[sound])
+                sounds.append(sound)
             detector.set_alarm_length(data["alarmLen"])
         except:
             print("Sound configuration error")
 
         if len(sounds) == 0:
-            sounds = [airhorn]
+            sounds = ["airhorn"]
             
         noise = random.choice(sounds)
-        noise.play()
+        print(noise)
+        sound_options[noise].play()
         time.sleep(.5)
 
 def detection(detector):

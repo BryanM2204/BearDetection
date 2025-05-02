@@ -61,7 +61,7 @@ const Dashboard = () => {
         <div className="update-title">Latest Updates</div>
         {updateData.reverse().map((card, index) => (
           <div className="update-text"><span>• {card}</span></div>
-        )).slice(0,3)}
+        )).slice(-3).reverse()}
       </div>
     );
   }
