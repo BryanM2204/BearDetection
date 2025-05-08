@@ -22,7 +22,7 @@ Three terminals need to be used to run the code. One runs yolo.py, one runs webs
 Like mentioned before, a MySQL server is used to log in. The SQL to create the database and table can be found in SDPlogin.sql.
 
 ### Commands
-Terminal 1:
+**Terminal 1**:
 
 cd backend
 
@@ -31,7 +31,7 @@ source venv/Scripts/activate (optional if you choose to use a virtual environmen
 python yolo.py
 
 
-Terminal 2:
+**Terminal 2**:
 
 cd backend
 
@@ -40,7 +40,7 @@ source venv/Scripts/activate (optional if you choose to use a virtual environmen
 python webserver.py
 
 
-Terminal 3:
+**Terminal 3**:
 
 cd frontend
 
