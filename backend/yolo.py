@@ -41,11 +41,12 @@ class Detector:
 def sound(detector):
     pygame.init()
 
-    airhorn = pygame.mixer.Sound('C:/Users/rubas/OneDrive/Documents/Random/airhorn.mp3')
-    potsnpans = pygame.mixer.Sound('C:/Users/rubas/OneDrive/Documents/Random/potsnpans.mp3')
-    laser = pygame.mixer.Sound('C:/Users/rubas/OneDrive/Documents/Random/laser.mp3')
-    glass = pygame.mixer.Sound('C:/Users/rubas/OneDrive/Documents/Random/glass.wav')
-    whistle = pygame.mixer.Sound('C:/Users/rubas/OneDrive/Documents/Random/whistle.wav')
+    # May need to change file paths
+    airhorn = pygame.mixer.Sound('audio/airhorn.mp3')
+    potsnpans = pygame.mixer.Sound('audio/potsnpans.mp3')
+    laser = pygame.mixer.Sound('audio/laser.mp3')
+    glass = pygame.mixer.Sound('audio/glass.wav')
+    whistle = pygame.mixer.Sound('audio/whistle.wav')
 
     sound_options = {
         "airhorn": airhorn,
@@ -72,16 +73,17 @@ def sound(detector):
                     data = json.load(config)
             sounds = []
             for sound in data["sounds"]:
-                sounds.append(sound_options[sound])
+                sounds.append(sound)
             detector.set_alarm_length(data["alarmLen"])
         except:
             print("Sound configuration error")
 
         if len(sounds) == 0:
-            sounds = [airhorn]
+            sounds = ["airhorn"]
             
         noise = random.choice(sounds)
-        noise.play()
+        print(noise)
+        sound_options[noise].play()
         time.sleep(.5)
 
 def detection(detector):
@@ -129,8 +131,6 @@ def detection(detector):
             image_limit = data['imgLimit']
         except:
             print("Configuration Error")
-
-        # frame = cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
 
         results = model(frame, verbose=False)
 

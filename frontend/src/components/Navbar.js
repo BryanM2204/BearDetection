@@ -19,11 +19,11 @@ const Navbar = () => {
           <>
             <Link to="/dashboard">Detections</Link>
             <Link to="/config">Configure</Link>
-            <button onClick={handleLogout}>Logout</button>
+            <button onClick={handleLogout}>Log Out</button>
           </>
         ) : (
           <>
-            <Link to="/login">Login</Link>
+            <Link to="/login">Log In</Link>
             <Link to="/signup">Sign Up</Link>
           </>
         )}

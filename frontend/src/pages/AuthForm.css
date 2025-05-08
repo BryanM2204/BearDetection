@@ -95,3 +95,7 @@ input {
   text-align: center;
   margin-top: 1.5rem;
 }
+
+.switch-link a{
+  color: #323232ff;
+}

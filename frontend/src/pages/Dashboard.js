@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import placeholder from '../resources/placeholder.jpg';
 import './Dashboard.css';
-import { BiRefresh } from "react-icons/bi";
 
 const Card = (props) => {
   return (
@@ -61,7 +60,7 @@ const Dashboard = () => {
         <div className="update-title">Latest Updates</div>
         {updateData.reverse().map((card, index) => (
           <div className="update-text"><span>• {card}</span></div>
-        )).slice(0,3)}
+        )).slice(-3).reverse()}
       </div>
     );
   }
