@@ -46,7 +46,7 @@ const Home = () => {
             ) : (
               <>
                 <button className="button primary-btn" onClick={() => navigate("/login")}>
-                  Login
+                  Log In
                 </button>
                 <button className="button primary-btn" onClick={() => navigate("/signup")}>
                   Sign Up

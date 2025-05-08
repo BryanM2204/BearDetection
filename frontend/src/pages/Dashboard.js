@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import placeholder from '../resources/placeholder.jpg';
 import './Dashboard.css';
-import { BiRefresh } from "react-icons/bi";
 
 const Card = (props) => {
   return (
