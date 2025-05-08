@@ -23,15 +23,25 @@ Like mentioned before, a MySQL server is used to log in. The SQL to create the d
 
 ### Commands
 Terminal 1:
+
 cd backend
+
 source venv/Scripts/activate (optional if you choose to use a virtual environment)
+
 python yolo.py
 
+
 Terminal 2:
+
 cd backend
+
 source venv/Scripts/activate (optional if you choose to use a virtual environment)
+
 python webserver.py
 
+
 Terminal 3:
+
 cd frontend
+
 npm run start
