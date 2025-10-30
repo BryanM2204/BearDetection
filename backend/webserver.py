@@ -29,8 +29,8 @@ def create_connection():
         connection = pymysql.connect( # connect to the SQL server and use the SDPlogin database
             host='localhost',
             user='root',
-            password='password', # make sure to change login info
-            database='SDPlogin',
+            password='', # make sure to change login info
+            database='sdplogin',
             port=3306 # default is 3306, I'm using 3307 for this MySQL server because of conflicts
         )
         return connection
@@ -64,7 +64,7 @@ def signup():
     connection = create_connection()
     cursor = connection.cursor()
     try:
-        query = "INSERT into userpass (Username, Password) VALUES (%s, %s);"
+        query = "INSERT into USERPASS (Username, Password) VALUES (%s, %s);"
         cursor.execute(query, (username, password))
         connection.commit()
         success = True
@@ -92,7 +92,7 @@ def login():
     connection = create_connection()
     cursor = connection.cursor()
     try:
-        query = "SELECT Password FROM userpass WHERE Username = %s;"
+        query = "SELECT Password FROM USERPASS WHERE Username = %s;"
         cursor.execute(query, (username,)) # parameterized query to prevent SQL injection
         queried_password = cursor.fetchone() # retrieves the next row of a query result set
         cursor.fetchall() # make sure there's no leftover rows in the query result set (prevent errors)
